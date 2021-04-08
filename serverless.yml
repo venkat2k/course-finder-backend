@@ -1,0 +1,43 @@
+service: course-finder-backend
+frameworkVersion: '2'
+plugins:
+  - serverless-offline
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+
+functions:
+  fetchYoutubeResults:
+    handler: src/api/results/youtubeResults.getResults
+    events:
+      - http:
+          path: /api/youtubeResults
+          method: get
+          cors:
+            origin: "*"
+            headers:
+              - "*"
+              
+  fetchCourseraResults:
+    handler: src/api/results/courseraResults.getResults
+    events:
+      - http:
+          path: /api/courseraResults
+          method: get
+          cors:
+            origin: "*"
+            headers:
+              - "*"
+          
+  fetchBlogResults:
+    handler: src/api/results/googleResults.getResults
+    events:
+      - http:
+          path: /api/blogResults
+          method: get
+          cors:
+            origin: "*"
+            headers:
+              - "*"
+          
