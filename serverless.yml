@@ -8,6 +8,17 @@ provider:
   lambdaHashingVersion: 20201221
 
 functions:
+  login:
+    handler: src/api/auth/auth.login
+    events:
+      - http:
+          path: /api/login
+          method: post
+          cors:
+            origin: "*"
+            headers:
+              - "*"
+
   fetchYoutubeResults:
     handler: src/api/results/youtubeResults.getResults
     events:
@@ -20,10 +31,10 @@ functions:
               - "*"
               
   fetchCourseraResults:
-    handler: src/api/results/courseraResults.getResults
+    handler: src/api/results/courseResults.getResults
     events:
       - http:
-          path: /api/courseraResults
+          path: /api/courseResults
           method: get
           cors:
             origin: "*"
