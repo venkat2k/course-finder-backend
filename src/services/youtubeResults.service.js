@@ -60,7 +60,7 @@ class YoutubeResults {
                     // console.log("body", body)
                     var snippet = body.items[0].snippet;
                     var statistics = body.items[0].statistics;
-                    var ldRatio = (statistics.likeCount / statistics.dislikeCount) * 5;
+                    var ldRatio = (statistics.likeCount / (statistics.likeCount + statistics.dislikeCount)) * 5;
                     ldRatio = ldRatio.toFixed(2);
                     // console.log(snippet)
                     result = {
@@ -70,7 +70,7 @@ class YoutubeResults {
                         channel: snippet.channelTitle,
                         thumbnailURL: snippet.thumbnails.default,
                         description: snippet.description,
-                        ldRatio: ldRatio
+                        rating: ldRatio
                     }
                     resolve(result);
                 })
