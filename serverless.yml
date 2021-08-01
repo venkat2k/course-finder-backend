@@ -51,4 +51,14 @@ functions:
             origin: "*"
             headers:
               - "*"
-          
+  
+  getVideoDetails:
+    handler: src/api/results/youtubeResults.getVideoDetails
+    events:
+      - http:
+        path: /api/getVideoDetails
+        method: get
+        cors:
+          origin: "*"
+          headers:
+            - "*"

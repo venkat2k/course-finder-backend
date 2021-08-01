@@ -46,7 +46,7 @@ class YoutubeResults {
     }
     static async getVideoDetails(videoId) {
         var API_KEY = config.YT_API_KEY;
-        var link = "https://youtube.googleapis.com/youtube/v3/videos?part=snippet&id=" + videoId + "&key=" + API_KEY;
+        var link = "https://youtube.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=" + videoId + "&key=" + API_KEY;
         var encodedURI = encodeURI(link)
         var result = {}
         return new Promise((resolve, _reject) => {
@@ -59,6 +59,9 @@ class YoutubeResults {
                     body = JSON.parse(body);
                     // console.log("body", body)
                     var snippet = body.items[0].snippet;
+                    var statistics = body.items[0].statistics;
+                    var ldRatio = (statistics.likeCount / statistics.dislikeCount) * 5;
+                    ldRatio = ldRatio.toFixed(2);
                     // console.log(snippet)
                     result = {
                         type: "video",
@@ -66,7 +69,8 @@ class YoutubeResults {
                         title: snippet.title,
                         channel: snippet.channelTitle,
                         thumbnailURL: snippet.thumbnails.default,
-                        description: snippet.description
+                        description: snippet.description,
+                        ldRatio: ldRatio
                     }
                     resolve(result);
                 })
