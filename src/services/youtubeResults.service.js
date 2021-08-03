@@ -105,6 +105,34 @@ class YoutubeResults {
             })
         })
     }
+    static async fetchComments(videoId) {
+        var API_KEY = config.YT_API_KEY;
+        var link = "https://www.googleapis.com/youtube/v3/commentThreads" + "key=" + API_KEY + "&textFormat=plainText&order=relevance&part=snippet&videoId=" + videoId+ "&maxResults=10"
+        var encodedURI = encodeURI(link)
+        var result = {}
+        return new Promise((resolve, _reject) => {
+            https.get(encodedURI, (response) => {
+                var body = "";
+                response.on("data", data => {
+                    body += data;
+                })
+                response.on("end", () => {
+                    body = JSON.parse(body);
+                    // console.log("body", body)
+                    var comments = [];
+                    var snippet = body.items[0].snippet;
+                    for (var i = 0; i < 10; i++) {
+                        comments.push(body.items[i].snippet.topLevelComment.snippet.textDisplay);
+                    }
+                    // console.log("snippet", snippet)
+                    result = {
+                        comments: comments
+                    }
+                    resolve(result);
+                })
+            })
+        })
+    }
     static async fetchResults(searchQuery) {
         var response = []
         var resultIds = await YoutubeResults.getResultIds(searchQuery);
