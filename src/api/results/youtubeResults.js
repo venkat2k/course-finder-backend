@@ -26,17 +26,5 @@ async function getVideoDetails(event) {
     return response
 }
 
-async function getComments(event) {
-    var videoId = event.queryStringParameters.videoId;
-    var responseBody = await YoutubeResults.fetchComments(videoId);
-    var response = {
-        statusCode: APPLICATION_CONSTANTS.HTTP_OK_STATUS,
-        body: JSON.stringify({
-            data: responseBody
-        })
-    }
-    return response
-}
 module.exports.getResults = getResults
 module.exports.getVideoDetails = getVideoDetails
-module.exports.getComments = getComments

@@ -48,6 +48,7 @@ class YoutubeResults {
         var API_KEY = config.YT_API_KEY;
         var link = "https://youtube.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=" + videoId + "&key=" + API_KEY;
         var encodedURI = encodeURI(link)
+        var comments = await YoutubeResults.fetchComments(videoId);
         var result = {}
         return new Promise((resolve, _reject) => {
             https.get(encodedURI, (response) => {
@@ -70,7 +71,8 @@ class YoutubeResults {
                         channel: snippet.channelTitle,
                         thumbnailURL: snippet.thumbnails.default,
                         description: snippet.description,
-                        rating: ldRatio
+                        rating: ldRatio,
+                        comments: comments
                     }
                     resolve(result);
                 })
@@ -125,10 +127,8 @@ class YoutubeResults {
                         comments.push(body.items[i].snippet.topLevelComment.snippet.textDisplay);
                     }
                     // console.log("snippet", snippet)
-                    result = {
-                        comments: comments
-                    }
-                    resolve(result);
+                    
+                    resolve(comments);
                 })
             })
         })

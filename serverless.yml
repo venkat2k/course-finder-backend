@@ -62,14 +62,3 @@ functions:
             origin: "*"
             headers:
               - "*"
-
-  getComments:
-    handler: src/api/results/youtubeResults.getComments
-    events:
-      - http:
-          path: /api/getComments
-          method: get
-          cors:
-            origin: "*"
-            headers:
-              - "*"
