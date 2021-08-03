@@ -4,11 +4,11 @@ const APPLICATION_CONSTANTS = require("../constants/application.constants");
 
 class YoutubeResults {
     static async getResultIds(searchQuery) {
-        console.log("getResultIds - inside")
+        // console.log("getResultIds - inside")
         var API_KEY = config.YT_API_KEY;
         var link = "https://youtube.googleapis.com/youtube/v3/search?key=" + API_KEY + "&q=" + searchQuery + "&maxResults=10";
         var encodedURI = encodeURI(link)
-        console.log(encodedURI)
+        // console.log(encodedURI)
         var resultIds = []
         return new Promise((resolve, reject) => {
             
@@ -61,7 +61,7 @@ class YoutubeResults {
                     // console.log("body", body)
                     var snippet = body.items[0].snippet;
                     var statistics = body.items[0].statistics;
-                    var ldRatio = (statistics.likeCount / (statistics.likeCount + statistics.dislikeCount)) * 5;
+                    var ldRatio = (parseInt(statistics.likeCount) / (parseInt(statistics.likeCount) + parseInt(statistics.dislikeCount))) * 5;
                     ldRatio = ldRatio.toFixed(2);
                     // console.log(snippet)
                     result = {
@@ -69,9 +69,9 @@ class YoutubeResults {
                         id: videoId,
                         title: snippet.title,
                         channel: snippet.channelTitle,
-                        thumbnailURL: snippet.thumbnails.default,
+                        url: snippet.thumbnails.default.url,
                         description: snippet.description,
-                        rating: ldRatio,
+                        rating: parseInt(ldRatio),
                         comments: comments
                     }
                     resolve(result);
@@ -109,7 +109,7 @@ class YoutubeResults {
     }
     static async fetchComments(videoId) {
         var API_KEY = config.YT_API_KEY;
-        var link = "https://www.googleapis.com/youtube/v3/commentThreads" + "key=" + API_KEY + "&textFormat=plainText&order=relevance&part=snippet&videoId=" + videoId+ "&maxResults=10"
+        var link = "https://www.googleapis.com/youtube/v3/commentThreads?" + "key=" + API_KEY + "&textFormat=plainText&order=relevance&part=snippet&videoId=" + videoId+ "&maxResults=10"
         var encodedURI = encodeURI(link)
         var result = {}
         return new Promise((resolve, _reject) => {
@@ -119,12 +119,16 @@ class YoutubeResults {
                     body += data;
                 })
                 response.on("end", () => {
+                    console.log('body', body);
                     body = JSON.parse(body);
                     // console.log("body", body)
                     var comments = [];
                     var snippet = body.items[0].snippet;
                     for (var i = 0; i < 10; i++) {
-                        comments.push(body.items[i].snippet.topLevelComment.snippet.textDisplay);
+                        comments.push({
+                            name: body.items[i].snippet.topLevelComment.snippet.authorDisplayName,
+                            comment: body.items[i].snippet.topLevelComment.snippet.textDisplay
+                        });
                     }
                     // console.log("snippet", snippet)
                     
@@ -136,7 +140,7 @@ class YoutubeResults {
     static async fetchResults(searchQuery) {
         var response = []
         var resultIds = await YoutubeResults.getResultIds(searchQuery);
-        console.log(resultIds);
+        // console.log(resultIds);
         return new Promise(async (resolve, _reject) => {
             await Promise.all(resultIds.map(async(element) => {
                 if (element.type === "video") {
@@ -160,7 +164,7 @@ class YoutubeResults {
             //         response.push(playlistDetails);
             //     }
             // })
-                console.log("final", response);
+                // console.log("final", response);
                 resolve(response);
             // return response;
         })
